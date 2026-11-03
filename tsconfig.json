@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/relay" },
+    { "path": "./apps/agent" },
+    { "path": "./packages/protocol" },
+    { "path": "./packages/oneauth" },
+    { "path": "./packages/database" },
+    { "path": "./packages/mcp-bridge" },
+    { "path": "./packages/shared" }
+  ]
+}
