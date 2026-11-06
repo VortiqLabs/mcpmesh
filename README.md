@@ -7,15 +7,28 @@ Each random hostname maps to an isolated session:
 
 The peer connects over WebSocket and serves the MCP tools. The gateway forwards MCP `tools/list` and `tools/call` requests to that peer.
 
-## Run in Codespaces
+## Run locally
 
 ```bash
-pnpm install
+npm install
 cp .env.example .env
-pnpm dev
+npm run dev
 ```
 
-Forward port 8787. For the real wildcard domain, route `*.mcp.nishantapps.in` through a public reverse proxy/tunnel to this process and preserve the original Host header. A Codespace forwarded URL is not a permanent production origin.
+Forward port 8787. For the real wildcard domain, route `*.mcp.nishantapps.in` through a public reverse proxy/tunnel to this process and preserve the original Host header.
+
+## Production build
+
+The build bundles the gateway and its WebSocket library into one CommonJS file at `dist/index.cjs`. The resulting runtime has no npm dependencies.
+
+```bash
+npm ci
+npm run build
+npm prune --omit=dev
+npm start
+```
+
+For Render, use the commands above as the **Build Command** and `npm start` as the **Start Command**. Do not set the build command to `npm ci --omit=dev` because the bundler and WebSocket library are build-time dependencies.
 
 ## WebSocket peer protocol
 
