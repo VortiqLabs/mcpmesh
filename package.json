@@ -11,10 +11,8 @@
     "dev": "node --watch src/index.js",
     "build": "esbuild src/index.js --bundle --platform=node --format=cjs --target=node22 --outfile=dist/index.cjs"
   },
-  "dependencies": {
-    "ws": "^8.18.3"
-  },
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "esbuild": "^0.28.2",
+    "ws": "^8.18.3"
   }
 }
