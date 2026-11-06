@@ -7,9 +7,9 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/index.cjs",
     "dev": "node --watch src/index.js",
-    "build": "esbuild src/index.js --bundle --platform=node --format=esm --target=node22 --outfile=dist/index.js"
+    "build": "esbuild src/index.js --bundle --platform=node --format=cjs --target=node22 --outfile=dist/index.cjs"
   },
   "dependencies": {
     "ws": "^8.18.3"
