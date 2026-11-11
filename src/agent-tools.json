@@ -1,0 +1,911 @@
+[
+  {
+    "name": "editor_context",
+    "description": "Get the active editor file, language, cursor, selection, and selected text through VS Code.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "editor_diagnostics",
+    "description": "Get current VS Code language-service diagnostics for the active editor or a workspace-relative file.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Optional workspace-relative file path",
+          "type": "string"
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "editor_symbols",
+    "description": "Get document symbols from the active editor or a workspace-relative file using registered VS Code language providers.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Optional workspace-relative file path",
+          "type": "string"
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "workspace_search",
+    "description": "Search text in workspace source files with bounded results, skipping common dependency/build directories.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Literal text to search for"
+        },
+        "include": {
+          "description": "Optional path substring filter",
+          "type": "string"
+        },
+        "maxResults": {
+          "description": "Maximum matches; defaults to 100",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "browser_open_url",
+    "description": "Open an HTTP(S) URL in the user's configured browser. VS Code does not provide a universal stable API for inspecting arbitrary browser tabs.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Absolute HTTP(S) URL"
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "ping",
+    "description": "Returns simple success response, server version, and basic status.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "workspace_info",
+    "description": "Returns active workspace details and folder metadata via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "list_workspace_files",
+    "description": "Lists files and directories in the workspace via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "dirPath": {
+          "description": "Workspace-relative directory path to list (defaults to root)",
+          "type": "string"
+        },
+        "recursive": {
+          "description": "Whether to recursively scan subdirectories",
+          "type": "boolean"
+        },
+        "maxDepth": {
+          "description": "Maximum directory depth to scan",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxResults": {
+          "description": "Maximum number of entries to return",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "read_file",
+    "description": "Reads specified workspace file contents via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Workspace-relative file path"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "write_file",
+    "description": "Proposes creating or overwriting a workspace file. In the VS Code extension, the change is not applied until the user accepts it in the VortiqLabs Agent sidebar; declining discards it.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Workspace-relative file path"
+        },
+        "content": {
+          "type": "string",
+          "description": "Content to write to the file"
+        }
+      },
+      "required": [
+        "path",
+        "content"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "edit_file",
+    "description": "Proposes replacing a line range in a workspace file. In the VS Code extension, the change is not applied until the user accepts it in the VortiqLabs Agent sidebar; declining discards it.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Workspace-relative file path"
+        },
+        "startLine": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Start line number (1-indexed)"
+        },
+        "endLine": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991,
+          "description": "End line number (1-indexed, inclusive)"
+        },
+        "content": {
+          "type": "string",
+          "description": "Replacement content for specified line range"
+        }
+      },
+      "required": [
+        "path",
+        "startLine",
+        "endLine",
+        "content"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "git_status",
+    "description": "Returns current Git branch and working tree status via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "git_diff",
+    "description": "Returns working-tree git diff via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Optional workspace-relative file path to limit diff",
+          "type": "string"
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "git_apply_patch",
+    "description": "Proposes a git patch for the workspace. In the VS Code extension, the patch is not applied until the user accepts it in the VortiqLabs Agent sidebar; declining discards it.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "patch": {
+          "type": "string",
+          "description": "Unified patch content to apply"
+        }
+      },
+      "required": [
+        "patch"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "find_todos",
+    "description": "Finds TODO, FIXME, HACK, and XXX markers in supported text files across the active VS Code workspace. Returns file paths and line numbers; scanning is bounded for safety.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "maxResults": {
+          "description": "Maximum matching lines to return (default 100, maximum 500)",
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 500
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "run_terminal",
+    "description": "Execute a shell command from the active workspace root. Use this for commands such as tests, builds, linters, and Git inspection. Always provide a complete non-interactive command; do not use commands that require user input or leave a long-running process running. The command runs with a 30-second default timeout and a 120-second maximum timeout. A non-zero exit code is returned as a normal result so you can inspect stdout and stderr.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Complete non-interactive shell command to run from the workspace root"
+        },
+        "timeoutMs": {
+          "description": "Optional timeout in milliseconds; defaults to 30000 and is capped at 120000",
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 120000
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "file_diagnostics",
+    "description": "Get every current VS Code error and warning for exactly one workspace file. Use this after editing or when validating a file. Provide a workspace-relative path, then inspect the returned severity, message, source/code, and 1-based range for each diagnostic. Informational and hint diagnostics are intentionally excluded.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Workspace-relative path of the file to inspect, for example src/index.ts"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_status",
+    "description": "Inspects Codebase Indexer status via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_search",
+    "description": "Searches codebase index via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Text or concept to search for in the indexed codebase"
+        },
+        "limit": {
+          "description": "Maximum results, between 1 and 100",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "mode": {
+          "description": "Search strategy; hybrid is the default",
+          "type": "string",
+          "enum": [
+            "hybrid",
+            "lexical",
+            "semantic"
+          ]
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_symbols",
+    "description": "Retrieves symbol information via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Symbol search query"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "index_workspace",
+    "description": "Indexes authorized workspace via VS Code extension Agent.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Optional workspace-relative subdirectory to index",
+          "type": "string"
+        },
+        "force": {
+          "description": "Force a full re-index",
+          "type": "boolean"
+        },
+        "indexDir": {
+          "description": "Optional directory for storing index files",
+          "type": "string"
+        },
+        "maxFileSize": {
+          "description": "Maximum source file size, e.g. 5mb",
+          "type": "string"
+        },
+        "ignore": {
+          "description": "Additional ignore patterns",
+          "maxItems": 100,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "workers": {
+          "description": "Parser worker count (1–16)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "memoryLimit": {
+          "description": "Memory limit in MB (256–65536)",
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 65536
+        },
+        "profile": {
+          "description": "Indexing profile for normal or large codebases",
+          "type": "string",
+          "enum": [
+            "default",
+            "large"
+          ]
+        },
+        "noEmbeddings": {
+          "description": "Disable vector embeddings",
+          "type": "boolean"
+        },
+        "verboseMemory": {
+          "description": "Log memory usage during large index runs",
+          "type": "boolean"
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_install",
+    "description": "Download and install the pinned Codebase Indexer runtime for this OS/architecture, verify its SHA-256, and reuse the cached installation on subsequent calls.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_index_github",
+    "description": "Download and index a GitHub repository using the Codebase Indexer runtime. Provide owner/repository or a GitHub URL; private repositories require GITHUB_TOKEN or GH_TOKEN in the extension environment.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 3,
+          "description": "GitHub owner/repository slug or repository URL"
+        },
+        "ref": {
+          "description": "Git branch, tag, or commit; defaults to HEAD",
+          "type": "string"
+        },
+        "indexDir": {
+          "description": "Optional directory for storing the index",
+          "type": "string"
+        },
+        "force": {
+          "description": "Force re-indexing of the repository",
+          "type": "boolean"
+        },
+        "workers": {
+          "description": "Parser worker count (1–16)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "memoryLimit": {
+          "description": "Memory limit in MB (256–65536)",
+          "type": "integer",
+          "minimum": 256,
+          "maximum": 65536
+        },
+        "profile": {
+          "description": "Indexing profile for normal or large codebases",
+          "type": "string",
+          "enum": [
+            "default",
+            "large"
+          ]
+        },
+        "noEmbeddings": {
+          "description": "Disable vector embeddings",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "repository"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_inspect",
+    "description": "Read and validate metadata from a Codebase Indexer .index file. Use the index path returned by indexer_status or index_workspace.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to an existing Codebase Indexer .index file"
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_remove",
+    "description": "Delete the Codebase Indexer index for the specified workspace directory. This does not delete source files. Requires confirm=true; prefer the active workspace or a validated workspace-relative path.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Workspace-relative path for the indexed workspace; defaults to the active workspace",
+          "type": "string"
+        },
+        "confirm": {
+          "type": "boolean",
+          "const": true,
+          "description": "Must be true to confirm permanent deletion of this workspace's index"
+        }
+      },
+      "required": [
+        "confirm"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_references",
+    "description": "Find references to a symbol in the active workspace's Codebase Indexer index.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Symbol name"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_callers",
+    "description": "Find functions or symbols that call the specified symbol.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Target symbol name"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_callees",
+    "description": "Find functions or symbols called by the specified symbol.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Source symbol name"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_dependencies",
+    "description": "Explore outgoing dependency relations for a symbol, with a bounded graph depth.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Symbol name"
+        },
+        "depth": {
+          "description": "Graph traversal depth (default 1; maximum 12)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_dependents",
+    "description": "Find symbols that depend on or use the requested symbol, with a bounded graph depth.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Symbol name"
+        },
+        "depth": {
+          "description": "Graph traversal depth (default 1; maximum 12)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_symbol_path",
+    "description": "Find a bounded dependency path between two symbol names in the indexed codebase.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Starting symbol"
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Target symbol"
+        },
+        "maxDepth": {
+          "description": "Maximum traversal depth (default 4)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "maxNodes": {
+          "description": "Maximum graph nodes to visit (default 32)",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_files",
+    "description": "List indexed files in the active workspace, optionally filtered by language or path substring.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "language": {
+          "description": "Language identifier, e.g. TypeScript or Python",
+          "type": "string"
+        },
+        "pattern": {
+          "description": "Substring to match in file paths",
+          "type": "string"
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_repository_map",
+    "description": "Return a high-level map of repository areas, files, and indexed symbols.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_api_endpoints",
+    "description": "Discover API endpoint definitions detected in the indexed workspace.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_classify_query",
+    "description": "Classify a codebase question by likely query intent, helping choose the right search approach.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Natural-language question about the codebase"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_sensitive_regions",
+    "description": "Scan the indexed workspace for likely sensitive regions such as credentials or tokens. The detector is heuristic; verify results and do not expose secrets in responses.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_watch",
+    "description": "Start an incremental Codebase Indexer watch process for the active workspace or a safe workspace-relative subdirectory. Use indexer_stop_watch when finished.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Optional workspace-relative directory to watch",
+          "type": "string"
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_stop_watch",
+    "description": "Stop the watch process started by this extension instance.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_dashboard",
+    "description": "Start the Codebase Indexer web dashboard on localhost. Use indexer_stop_dashboard when finished.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "host": {
+          "description": "Local-only bind host; defaults to 127.0.0.1",
+          "type": "string",
+          "enum": [
+            "127.0.0.1",
+            "localhost"
+          ]
+        },
+        "port": {
+          "description": "Port; defaults to 4173",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "indexDir": {
+          "description": "Optional index storage directory",
+          "type": "string"
+        }
+      }
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  },
+  {
+    "name": "indexer_stop_dashboard",
+    "description": "Stop the dashboard process started by this extension instance.",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {}
+    },
+    "execution": {
+      "taskSupport": "forbidden"
+    }
+  }
+]
