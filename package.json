@@ -1,18 +1,20 @@
 {
-  "name": "mcp-mesh-wildcard-gateway",
+  "name": "vortiqlabs-mcp-mesh",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=22"
-  },
+  "description": "OneAuth-protected MCP server and authenticated device WebSocket gateway",
   "scripts": {
-    "start": "node dist/index.cjs",
-    "dev": "node --watch src/index.js",
-    "build": "esbuild src/index.js --bundle --platform=node --format=cjs --target=node22 --outfile=dist/index.cjs"
+    "start": "node --env-file=.env src/index.js",
+    "dev": "node --env-file=.env --watch src/index.js",
+    "check": "node --check src/index.js"
   },
-  "devDependencies": {
-    "esbuild": "^0.28.2",
-    "ws": "^8.18.3"
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "ws": "^8.18.3",
+    "zod": "^4.6.7"
   }
 }
